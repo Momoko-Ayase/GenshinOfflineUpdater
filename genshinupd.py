@@ -181,5 +181,6 @@ print("I: Almost done. Cleaning up...")
 util.delhdiff(game_path)
 util.cleanup(patch_root)
 os.remove(game_path + '\\' + 'deletefiles.txt')
+os.remove(game_path + '\\' + 'hdifffiles.txt')
 
 print("Finished!")
