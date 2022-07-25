@@ -1,0 +1,2 @@
+GenshinImpact_Data/DelMe1.blk
+GenshinImpact_Data/DelMe2.blk
