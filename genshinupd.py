@@ -9,7 +9,7 @@ import zipfile
 import os
 import util
 import sentry_sdk
-import distutils
+from distutils.dir_util import copy_tree
 import glob
 from sys import exit
 
@@ -25,16 +25,19 @@ if not os.name == "nt":
     exit(1)
 
 # Parse arguments
-parser = argparse.ArgumentParser(description="A Genshin Offline Updater for convenient use.")
-parser.add_argument('-p', '--patch', type=str, help='new version patch file', required=True)
-parser.add_argument('-g', '--game', type=str, help='game installation path', required=True)
+parser = argparse.ArgumentParser(description="A Genshin Offline Updater for convenient use.",
+                                 epilog="If you don't specify -p/-g, the updater will run in interactive mode.")
+parser.add_argument('-p', '--patch', type=str, help='new version patch file')
+parser.add_argument('-g', '--game', type=str, help='game installation path')
 parser.add_argument('-f', '--force', action='store_true', help='Ignore warnings and force update')
+parser.add_argument('-y', '--yes', action='store_true', help='Answer yes to all questions')
 parser.add_argument('--disable-sentry', action='store_true', help='Disable Sentry error reporting')
 args = parser.parse_args()
 game_path = args.game
 patch_file = args.patch
 force_enable = args.force
 sentry_enable = not args.disable_sentry
+bypass_questions = args.yes
 
 if sentry_enable:
     print("I: We use Sentry to report errors. You can disable it by using --disable-sentry.")
@@ -45,6 +48,11 @@ if sentry_enable:
     )
 else:
     print("I: Sentry is disabled during this operation.")
+
+if game_path is None:
+    game_path = input("I: Please enter the game installation path: ")
+if patch_file is None:
+    patch_file = input("I: Please enter the patch file path: ")
 
 # Check game status
 # Check if game exists
@@ -64,13 +72,17 @@ if os.system("tasklist | findstr GenshinImpact.exe") == 0 or os.system("tasklist
 
 # Unzip the patch file
 patch_root = game_path + '\\' + 'patch'
-with zipfile.ZipFile(patch_file, "r") as archive:
-    try:
-        print("I: Extracting patch file, this may take a while...")
-        archive.extractall(path=patch_root)
-    except zipfile.BadZipfile:
-        print("E: Invalid patch file. Please check your file and try again.")
-        exit(1)
+try:
+    with zipfile.ZipFile(patch_file, "r") as archive:
+        try:
+            print("I: Extracting patch file, this may take a while...")
+            archive.extractall(path=patch_root)
+        except zipfile.BadZipfile:
+            print("E: Invalid patch file. Please check your file and try again.")
+            exit(1)
+except FileNotFoundError:
+    print("E: Patch file not found.")
+    exit(1)
 
 # Pre-check patch files
 # game_build = 1 -> CN
@@ -133,7 +145,7 @@ if convert:
 try:
     with open(game_path + '\\' + game_name + '_Data' + '\\' + 'Persistent' + '\\' + 'ScriptVersion', 'r') as f:
         game_version = f.read()
-except:
+except FileNotFoundError:
     print("W: Oops, we can't find the game version.\n"
           "We can still update for you, but you should check the version to avoid errors after updating.")
 # try:
@@ -146,11 +158,14 @@ except:
 print("I: Base Game version: " + game_version)
 # print("I: Patch version: " + patch_version)  # Patches don't have Persistent folder
 print("I: Please check if the version is correct.")
-a = input("Continue? (y/N)")
-if a != 'y' and a != 'Y':
-    print("E: Aborted.")
-    util.cleanup(patch_root)
-    exit(1)
+if bypass_questions:
+    print("I: Continuing...")
+else:
+    a = input("Continue? (y/N)")
+    if a != 'y' and a != 'Y':
+        print("E: Aborted.")
+        util.cleanup(patch_root)
+        exit(1)
 
 # Delete the old game files
 files2del = open(patch_root + '\\' + "deletefiles.txt", "r").readlines()
@@ -165,7 +180,7 @@ for i in range(count):
 
 # Copy the new game files and replace the old ones
 print("I: Copying files, this may take a while...")
-distutils.dir_util.copy_tree(patch_root, game_path)
+copy_tree(patch_root, game_path)
 print("I: New files copied.")
 
 # patch some files
@@ -181,6 +196,9 @@ print("I: Almost done. Cleaning up...")
 util.delhdiff(game_path)
 util.cleanup(patch_root)
 os.remove(game_path + '\\' + 'deletefiles.txt')
-os.remove(game_path + '\\' + 'hdifffiles.txt')
+try:
+    os.remove(game_path + '\\' + 'hdifffiles.txt')
+except FileNotFoundError:
+    pass  # Old version of the game patch doesn't have this file
 
 print("Finished!")
