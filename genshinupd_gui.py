@@ -231,7 +231,7 @@ def update(game_path, patch_file, force_enable):
         hdiff_files = glob.glob(game_path + '\\' + '**' + '\\' + '*.hdiff', recursive=True)
         for hdiff_file in hdiff_files:
             orig_file = hdiff_file.replace('.hdiff', '')
-            print("I: Patching: " + orig_file +
+            updui.logview.setText("I: Patching: " + orig_file +
                   "( " + str(hdiff_files.index(hdiff_file) + 1) + "/" + str(len(hdiff_files)) + " )")
             QtWidgets.QApplication.processEvents()
             os.system("hpatchz.exe -f " + orig_file + " " + hdiff_file + " " + orig_file)
