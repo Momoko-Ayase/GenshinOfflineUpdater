@@ -1,13 +1,13 @@
 [[source]]
 url = "https://pypi.org/simple"
+# url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 verify_ssl = true
 name = "pypi"
 
 [packages]
 sentry-sdk = "*"
 pyinstaller = "*"
+pyqt5 = "*"
+win10toast = "*"
 
 [dev-packages]
-
-[requires]
-python_version = "3.8"

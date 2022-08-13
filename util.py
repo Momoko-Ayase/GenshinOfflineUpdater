@@ -3,6 +3,7 @@ import glob
 import os
 
 
+
 def cleanup(patch_root):
     print("I: Cleaning up...")
     if os.path.exists(patch_root):
@@ -24,3 +25,4 @@ def convert(game_build, patch_root):
         os.rename(patch_root + '\\' + 'YuanShen.exe', patch_root + '\\' + 'GenshinImpact.exe')
         os.rename(patch_root + '\\' + 'YuanShen_Data', patch_root + '\\' + 'GenshinImpact_Data')
     print("I: Conversion finished.")
+

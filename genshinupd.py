@@ -99,7 +99,6 @@ if not (os.path.exists(game_path + '\\' + 'YuanShen.exe') and os.path.exists(gam
             print("I: Continuing...")
             game_build = 1
             convert = True
-
     elif os.path.exists(game_path + '\\' + 'GenshinImpact.exe') and os.path.exists(patch_root + '\\' + 'YuanShen.exe'):
         print("W: You're updating OS build with CN patch. Unexpected behavior may occur after upgrade.")
         if not force_enable:
@@ -202,3 +201,4 @@ except FileNotFoundError:
     pass  # Old version of the game patch doesn't have this file
 
 print("Finished!")
+time.sleep(5)

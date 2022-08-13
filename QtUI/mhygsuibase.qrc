@@ -1,0 +1,30 @@
+<RCC>
+  <qresource prefix="background">
+    <file>image2.png</file>
+    <file>base.png</file>
+    <file>Image.png</file>
+  </qresource>
+  <qresource prefix="progress">
+    <file>element1.png</file>
+    <file>element2.png</file>
+    <file>element3.png</file>
+    <file>element4.png</file>
+    <file>element5.png</file>
+    <file>element6.png</file>
+    <file>element7.png</file>
+    <file>element8.png</file>
+  </qresource>
+  <qresource prefix="icon">
+    <file>Games-GenshinImpact.png</file>
+    <file>logoui.png</file>
+  </qresource>
+  <qresource prefix="switch">
+    <file>switchoff.png</file>
+    <file>switchon.png</file>
+  </qresource>
+  <qresource prefix="button">
+    <file>button2.png</file>
+    <file>button1.png</file>
+    <file>exit.png</file>
+  </qresource>
+</RCC>
