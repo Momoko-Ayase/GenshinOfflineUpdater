@@ -9,5 +9,6 @@ sentry-sdk = "*"
 pyinstaller = "*"
 pyqt5 = "*"
 win10toast = "*"
+certifi = "*"
 
 [dev-packages]

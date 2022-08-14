@@ -1,0 +1,45 @@
+name: build
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  build:
+    name: build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Configure Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - name: Configure 7-zip
+        uses: crazy-max/ghaction-chocolatey@v2
+        with:
+          args: install 7zip -y
+      - name: Install dependencies
+        run: |
+          python -m pip install pipenv
+          pipenv install
+      - name: Build
+        run: |
+          pipenv run build.bat
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+      - name: Sign files
+        run: |
+          echo ${{ secrets.PASSPHRASE }} | gpg --passphrase-fd 0 -s .\dist\genshinupd_gui.exe
+          echo ${{ secrets.PASSPHRASE }} | gpg --passphrase-fd 0 -s .\dist\genshinupd.exe
+      - name: Pack files
+        run: |
+          7z a -tzip -m0=LZMA:d26 -mx=9 .\genshinupd.zip .\dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: genshinupd
+          path: .\genshinupd.zip
