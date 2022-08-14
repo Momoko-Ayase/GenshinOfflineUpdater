@@ -21,11 +21,10 @@ jobs:
           args: install 7zip -y
       - name: Install dependencies
         run: |
-          python -m pip install pipenv
-          pipenv install
+          python -m pip install -r requirements.txt
       - name: Build
         run: |
-          pipenv run build.bat
+          .\build.bat
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v5
         with:

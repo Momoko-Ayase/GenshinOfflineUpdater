@@ -1,0 +1,16 @@
+altgraph
+certifi
+future
+pefile
+pyinstaller
+pyinstaller-hooks-contrib
+pypiwin32
+PyQt5
+PyQt5-Qt5
+PyQt5-sip
+pywin32
+pywin32-ctypes
+sentry-sdk
+sv-ttk
+urllib3
+win10toast
