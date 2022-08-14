@@ -24,7 +24,7 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Build
         run: |
-          .\build.bat
+          .\build_ghactions.bat
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v5
         with:
@@ -34,11 +34,8 @@ jobs:
         run: |
           echo ${{ secrets.PASSPHRASE }} | gpg --passphrase-fd 0 -s .\dist\genshinupd_gui.exe
           echo ${{ secrets.PASSPHRASE }} | gpg --passphrase-fd 0 -s .\dist\genshinupd.exe
-      - name: Pack files
-        run: |
-          7z a -tzip -m0=LZMA:d26 -mx=9 .\genshinupd.zip .\dist
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: genshinupd
-          path: .\genshinupd.zip
+          path: dist\**\*
